@@ -1,0 +1,82 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.env/
+.venv/
+
+# Flask
+instance/
+.webassets-cache/
+
+# Environment Variables
+.env
+.env.*
+
+# Logs
+*.log
+
+# SQLite Database
+*.sqlite3
+*.db
+
+# PyCharm
+.idea/
+.idea
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Node.js / Vue
+node_modules/
+
+# Vue build output
+frontend/dist/
+dist/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vite
+.vite/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Docker
+*.pid
+
+# IntelliJ
+out/
+
+# Coverage reports
+coverage/
