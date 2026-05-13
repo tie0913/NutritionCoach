@@ -1,9 +1,16 @@
 from flask import jsonify
 
 
-def respOf(code: int, message: str, data):
+def succeed(data):
+    return jsonify({
+        "code": 0,
+        "message": None,
+        "data": data
+    })
+
+
+def fail(code: int, message: str):
     return jsonify({
         "code": code,
-        "message": message,
-        "data": data
+        "message": message
     })
