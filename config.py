@@ -1,7 +1,7 @@
 class Config:
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = (
-        "mysql+pymysql://dvwa:p@ssw0rd@localhost:3306/dvwa"
+        "mysql+pymysql://dev:!QAZ2wsx3edc@localhost:3306/nutri_coache"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
