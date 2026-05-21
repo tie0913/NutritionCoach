@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
 
 from config import Config
 
@@ -18,5 +19,9 @@ def create_app():
     # register blueprint
     from app.api.user_api import user_bp
     app.register_blueprint(user_bp)
+
+
+    app.config["JWT_SECRET_KEY"] = "NutritionCoach"
+    jwt = JWTManager(app)
 
     return app

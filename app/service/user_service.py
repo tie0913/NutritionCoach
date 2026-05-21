@@ -1,6 +1,60 @@
 from app.model.user import User
-from app.repository.user_repo import find_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 
-def get_user(user_id) -> User:
-    return find_user(user_id)
+class UserService:
+    def __init__(self, user_repository):
+        self.user_repository = user_repository
+
+    def sign_up(self, data):
+        existing_user = self.user_repository.find_by_email(
+            data.get("email")
+        )
+        if existing_user:
+            raise Exception("Email already exists")
+        user = User(
+            name=data.get("name"),
+            password=generate_password_hash(
+                data.get("password")
+            ),
+            email=data.get("email"),
+            birth_date=datetime.strptime(
+                data.get("birth_date"),
+                "%Y-%m-%d"
+            ).date()
+        )
+
+        return self.user_repository.save(user)
+
+    def sign_in(self, data):
+
+        email = data.get("email")
+        password = data.get("password")
+
+        user = self.user_repository \
+            .find_by_email(email)
+
+        if not user:
+            raise Exception("Email does not exist")
+
+        if not check_password_hash(
+                user.password,
+                password):
+            raise Exception("Password is incorrect")
+
+        return user
+
+
+
+    def get_current_user(self, user_id):
+        user = self.user_repository.find_by_id(user_id)
+        if not user:
+            raise Exception("User not found")
+        return user
+
+    def delete_account(self, user_id):
+        user = self.user_repository.find_by_id(user_id)
+        if not user:
+            raise Exception("User not found")
+        self.user_repository.delete(user)

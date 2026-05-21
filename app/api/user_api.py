@@ -1,17 +1,66 @@
 from flask import Blueprint
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 
-from app.resp import succeed
+from app.resp import succeed, fail
+from app.service.user_service import UserService
+from app.repository.user_repo import UserRepository
 
-from app.service.user_service import get_user
-
-user_bp = Blueprint(
-    "user",
-    __name__,
-    url_prefix="/user"
-)
+user_bp = Blueprint("user", __name__)
+user_repository = UserRepository()
+user_service = UserService(user_repository)
 
 
-@user_bp.route("/<int:user_id>", methods=["GET"])
-def query_user(user_id):
-    user = get_user(user_id)
-    return succeed(user.to_dict())
+@user_bp.route("/user/sign-up", methods=["POST"])
+def sign_up():
+    try:
+        data = request.json
+        resp = user_service.sign_up(data)
+        return succeed(resp.to_dict())
+    except Exception as e:
+        return fail(code=1, message=str(e))
+
+
+@user_bp.route("/user/sign-in", methods=["POST"])
+def sign_in():
+    try:
+        data = request.json
+        user = user_service.sign_in(data)
+
+        access_token = create_access_token(
+            identity=str(user.id)
+        )
+        return succeed({
+            "token": access_token,
+            "user": user.to_dict()
+        })
+    except Exception as e:
+        return fail(code=1, message=str(e))
+
+
+@user_bp.route("/user/me", methods=["GET"])
+@jwt_required()
+def get_current_user():
+    try:
+        user_id = get_jwt_identity()
+
+        resp = user_service \
+            .get_current_user(user_id)
+
+        return succeed(resp.to_dict())
+
+    except Exception as e:
+        return fail(code=1, message=str(e))
+
+
+@user_bp.route("/user/delete-account", methods=["DELETE"])
+@jwt_required()
+def delete_account():
+    try:
+        user_id = get_jwt_identity()
+        user_service \
+            .delete_account(user_id)
+        return succeed(True)
+
+    except Exception as e:
+        return fail(code=1, message=str(e))
