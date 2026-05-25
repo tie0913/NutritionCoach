@@ -7,6 +7,7 @@ from app.api.schema.user_schema import SignUpSchema, SignInSchema
 from app.resp import succeed, fail
 from app.service.user_service import UserService
 from app.repository.user_repo import UserRepository
+from exception import NutriCoachException
 
 user_bp = Blueprint("user", __name__)
 user_repository = UserRepository()
@@ -22,8 +23,10 @@ def sign_up():
         return succeed(resp.to_dict())
     except ValidationError as e:
         return fail(code=400, message=e.messages)
-    except Exception as e:
+    except NutriCoachException as e:
         return fail(code=1, message=str(e))
+    except Exception as e:
+        return fail(code=1, message="Unknown error")
 
 
 @user_bp.route("/user/sign-in", methods=["POST"])
@@ -41,8 +44,10 @@ def sign_in():
         })
     except ValidationError as e:
         return fail(code=400, message=e.messages)
-    except Exception as e:
+    except NutriCoachException as e:
         return fail(code=1, message=str(e))
+    except Exception as e:
+        return fail(code=1, message="Unknown error")
 
 
 
@@ -56,9 +61,10 @@ def get_current_user():
             .get_current_user(user_id)
 
         return succeed(resp.to_dict())
-
-    except Exception as e:
+    except NutriCoachException as e:
         return fail(code=1, message=str(e))
+    except Exception as e:
+        return fail(code=1, message="Unknown error")
 
 
 @user_bp.route("/user/delete-account", methods=["DELETE"])
@@ -69,6 +75,7 @@ def delete_account():
         user_service \
             .delete_account(user_id)
         return succeed(True)
-
-    except Exception as e:
+    except NutriCoachException as e:
         return fail(code=1, message=str(e))
+    except Exception as e:
+        return fail(code=1, message="Unknown error")

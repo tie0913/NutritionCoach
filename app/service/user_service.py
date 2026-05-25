@@ -2,6 +2,8 @@ from app.model.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+from exception import NutriCoachException
+
 
 class UserService:
     def __init__(self, user_repository):
@@ -12,7 +14,7 @@ class UserService:
             data.get("email")
         )
         if existing_user:
-            raise Exception("Email already exists")
+            raise NutriCoachException(message="Email already exists")
         user = User(
             name=data.get("name"),
             password=generate_password_hash(
@@ -36,12 +38,12 @@ class UserService:
             .find_by_email(email)
 
         if not user:
-            raise Exception("Email does not exist")
+            raise NutriCoachException(message="Email and Password are not match")
 
         if not check_password_hash(
                 user.password,
                 password):
-            raise Exception("Password is incorrect")
+            raise NutriCoachException(message="Email and Password are not match")
 
         return user
 
@@ -50,11 +52,11 @@ class UserService:
     def get_current_user(self, user_id):
         user = self.user_repository.find_by_id(user_id)
         if not user:
-            raise Exception("User not found")
+            raise NutriCoachException(message="User not found")
         return user
 
     def delete_account(self, user_id):
         user = self.user_repository.find_by_id(user_id)
         if not user:
-            raise Exception("User not found")
+            raise NutriCoachException(message="User not found")
         self.user_repository.delete(user)
