@@ -21,7 +21,7 @@ def create_app():
     app.register_blueprint(user_bp)
 
 
-    app.config["JWT_SECRET_KEY"] = "NutritionCoach"
+    app.config["JWT_SECRET_KEY"] = Config.SECRET_KEY
     jwt = JWTManager(app)
 
     return app
