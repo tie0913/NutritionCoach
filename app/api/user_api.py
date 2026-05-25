@@ -1,7 +1,9 @@
 from flask import Blueprint
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
+from marshmallow import ValidationError
 
+from app.api.schema.user_schema import SignUpSchema, SignInSchema
 from app.resp import succeed, fail
 from app.service.user_service import UserService
 from app.repository.user_repo import UserRepository
@@ -14,9 +16,12 @@ user_service = UserService(user_repository)
 @user_bp.route("/user/sign-up", methods=["POST"])
 def sign_up():
     try:
-        data = request.json
+        schema = SignUpSchema()
+        data = schema.validate(request.json)
         resp = user_service.sign_up(data)
         return succeed(resp.to_dict())
+    except ValidationError as e:
+        return fail(code=400, message=e.messages)
     except Exception as e:
         return fail(code=1, message=str(e))
 
@@ -24,9 +29,9 @@ def sign_up():
 @user_bp.route("/user/sign-in", methods=["POST"])
 def sign_in():
     try:
-        data = request.json
+        schema = SignInSchema()
+        data = schema.validate(request.json)
         user = user_service.sign_in(data)
-
         access_token = create_access_token(
             identity=str(user.id)
         )
@@ -34,8 +39,11 @@ def sign_in():
             "token": access_token,
             "user": user.to_dict()
         })
+    except ValidationError as e:
+        return fail(code=400, message=e.messages)
     except Exception as e:
         return fail(code=1, message=str(e))
+
 
 
 @user_bp.route("/user/me", methods=["GET"])
