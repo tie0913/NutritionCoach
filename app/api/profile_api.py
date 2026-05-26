@@ -27,12 +27,13 @@ def get_profile():
         profile = profile_service.get_profile(user_id)
 
         if profile is None:
-            return fail("Profile not found"), 404
+            return fail(code=1, message="Profile not found"), 404
 
         return succeed(profile_schema.dump(profile)), 200
 
     except Exception as e:
-        return fail(str(e)), 500
+        print(e)
+        return fail(code=1, message="Server error"), 500
 
 
 @profile_bp.route("", methods=["POST"])
@@ -43,13 +44,9 @@ def save_profile():
         user_id = get_jwt_identity()
         json_data = request.get_json()
         data = profile_schema.load(json_data)
-        profile = profile_service.save_profile(
-            user_id,
-            json_data
-        )
+        profile = profile_service.save_profile(user_id, data)
         return succeed(profile), 200
     except ValidationError as e:
-        return fail(str(e)), 400
-
+        return fail(code=1, message=str(e)), 400
     except Exception as e:
-        return fail(str(e)), 500
+        return fail(code=1, message="Server error"), 500

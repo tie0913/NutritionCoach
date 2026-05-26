@@ -106,7 +106,7 @@ all the fields are not null
 
 # Diet Plan
 
-## enities
+## entities
 
 ### plan
 
