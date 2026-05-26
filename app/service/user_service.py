@@ -21,10 +21,7 @@ class UserService:
                 data.get("password")
             ),
             email=data.get("email"),
-            birth_date=datetime.strptime(
-                data.get("birth_date"),
-                "%Y-%m-%d"
-            ).date()
+            birth_date=data.get("birth_date")
         )
 
         return self.user_repository.save(user)

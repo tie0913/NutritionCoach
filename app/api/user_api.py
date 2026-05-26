@@ -18,7 +18,8 @@ user_service = UserService(user_repository)
 def sign_up():
     try:
         schema = SignUpSchema()
-        data = schema.validate(request.json)
+        data = schema.load(request.json)
+        print(data)
         resp = user_service.sign_up(data)
         return succeed(resp.to_dict())
     except ValidationError as e:
@@ -26,6 +27,7 @@ def sign_up():
     except NutriCoachException as e:
         return fail(code=1, message=str(e))
     except Exception as e:
+        print(e)
         return fail(code=1, message="Unknown error")
 
 
@@ -33,7 +35,7 @@ def sign_up():
 def sign_in():
     try:
         schema = SignInSchema()
-        data = schema.validate(request.json)
+        data = schema.load(request.json)
         user = user_service.sign_in(data)
         access_token = create_access_token(
             identity=str(user.id)
@@ -47,6 +49,7 @@ def sign_in():
     except NutriCoachException as e:
         return fail(code=1, message=str(e))
     except Exception as e:
+        print(e)
         return fail(code=1, message="Unknown error")
 
 
@@ -64,6 +67,7 @@ def get_current_user():
     except NutriCoachException as e:
         return fail(code=1, message=str(e))
     except Exception as e:
+        print(e)
         return fail(code=1, message="Unknown error")
 
 
@@ -78,4 +82,5 @@ def delete_account():
     except NutriCoachException as e:
         return fail(code=1, message=str(e))
     except Exception as e:
+        print(e)
         return fail(code=1, message="Unknown error")
