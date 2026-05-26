@@ -11,4 +11,4 @@ class Config:
         f"{os.getenv('DB_NAME')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.getenv("JWT_SECRET")
+    SECRET_KEY = os.getenv("JWT_SECRET_KEY")
