@@ -1,14 +1,18 @@
+import traceback
+
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 
 from app.api.schema.profile_schema import profile_schema
+from app.repository.user_repo import UserRepository
 from app.service.profile_service import ProfileService
 from app.repository.profile_repo import ProfileRepository
 from app.resp import succeed, fail
 
 profile_repo = ProfileRepository()
-profile_service = ProfileService(profile_repo)
+user_repo = UserRepository()
+profile_service = ProfileService(profile_repo, user_repo)
 
 profile_bp = Blueprint(
     "profile",
@@ -32,7 +36,7 @@ def get_profile():
         return succeed(profile_schema.dump(profile)), 200
 
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         return fail(code=1, message="Server error"), 500
 
 
@@ -49,4 +53,5 @@ def save_profile():
     except ValidationError as e:
         return fail(code=1, message=str(e)), 400
     except Exception as e:
+        traceback.print_exc()
         return fail(code=1, message="Server error"), 500

@@ -18,11 +18,7 @@ class ProfileSchema(Schema):
         validate=validate.Range(min=0)
     )
 
-    BMR = fields.Int(
-        required=False,
-        allow_none=True,
-        validate=validate.Range(min=0)
-    )
+    BMR = fields.Int(dump_only=True)
 
     chronic = fields.List(
         fields.String(),
