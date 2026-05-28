@@ -19,9 +19,11 @@ def create_app():
     # register blueprint
     from app.api.user_api import user_bp
     from app.api.profile_api import profile_bp
+    from app.api.food_api import food_bp
+
     app.register_blueprint(user_bp)
     app.register_blueprint(profile_bp)
-
+    app.register_blueprint(food_bp)
 
     app.config["JWT_SECRET_KEY"] = Config.SECRET_KEY
     jwt = JWTManager(app)
