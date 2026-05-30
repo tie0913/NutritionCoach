@@ -8,7 +8,7 @@ from marshmallow import ValidationError
 from app.api.schema.food_schema import (
     FoodCreateSchema,
     FoodQuerySchema,
-    DiagramQuerySchema,
+    DiagramQuerySchema, FoodDeleteSchema,
 )
 from app.service.food_service import FoodService
 from app.repository.food_repo import FoodRepository
@@ -57,6 +57,22 @@ def list_foods():
     except ValidationError as e:
         return fail(code=1, message=str(e.messages)), 400
 
+    except Exception as e:
+        traceback.print_exc()
+        return fail(code=1, message="Server error"), 500
+
+@food_bp.route("/foodlog", methods=["DELETE"])
+@jwt_required()
+def delete_food():
+    try:
+        user_id = int(get_jwt_identity())
+        delete = FoodDeleteSchema().load(request.args)
+        print(delete)
+        record_id = delete["id"]
+        res = food_svc.delete_food_log_by_id(user_id, record_id)
+        return succeed(res), 200
+    except ValidationError as e:
+        return fail(code=1, message=str(e.messages)), 400
     except Exception as e:
         traceback.print_exc()
         return fail(code=1, message="Server error"), 500

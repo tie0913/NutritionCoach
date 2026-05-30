@@ -1,9 +1,11 @@
 from app.model.food import Food
 from app.api.schema.food_schema import FoodResponseSchema
+from app.repository.food_repo import FoodRepository
+
 
 class FoodService:
 
-    def __init__(self, food_repo):
+    def __init__(self, food_repo:FoodRepository):
         self.food_repo = food_repo
 
     def create_food(self, user_id: int, data: dict):
@@ -48,3 +50,6 @@ class FoodService:
             }
             for row in rows
         ]
+
+    def delete_food_log_by_id(self, user_id, record_id):
+        return self.food_repo.delete_food_log_by_id(user_id, record_id)

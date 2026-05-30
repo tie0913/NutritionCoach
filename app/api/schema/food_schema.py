@@ -1,5 +1,3 @@
-# app/schemas/food_schema.py
-
 from marshmallow import Schema, fields, validate
 
 
@@ -28,7 +26,10 @@ class FoodQuerySchema(Schema):
     page = fields.Int(load_default=1, validate=validate.Range(min=1))
     page_size = fields.Int(load_default=10, validate=validate.Range(min=1, max=100))
 
+class FoodDeleteSchema(Schema):
+    id = fields.Int()
 
 class DiagramQuerySchema(Schema):
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
+

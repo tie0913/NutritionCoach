@@ -34,3 +34,15 @@ class FoodRepository:
             .order_by(cast(Food.create_time, Date).asc())
             .all()
         )
+
+    def delete_food_log_by_id(self, user_id, record_id):
+        food_log = Food.query.filter(
+            Food.id == record_id,
+            Food.user_id == user_id
+        ).first()
+        if not food_log:
+            return False
+        else:
+            db.session.delete(food_log)
+            db.session.commit()
+            return True
