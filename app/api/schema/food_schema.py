@@ -32,6 +32,6 @@ class FoodDeleteSchema(Schema):
     id = fields.Int()
 
 class DiagramQuerySchema(Schema):
-    start_date = LocalDateTime(required=True)
-    end_date = LocalDateTime(required=True)
+    start_date = fields.Date(required=True)
+    end_date = fields.Date(required=True)
 
