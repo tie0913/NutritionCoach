@@ -34,22 +34,15 @@ class FoodService:
         }
 
     def get_diagram_data(self, user_id: int, start_date, end_date):
-        rows = self.food_repo.summarize_by_date_range(
+        return self.food_repo.summarize_by_date_range(
             user_id=user_id,
             start_date=start_date,
             end_date=end_date
         )
 
-        return [
-            {
-                "date": row.date.isoformat(),
-                "calories": int(row.calories or 0),
-                "carbs": int(row.carbs or 0),
-                "protein": int(row.protein or 0),
-                "fats": int(row.fats or 0),
-            }
-            for row in rows
-        ]
+
+
+
 
     def delete_food_log_by_id(self, user_id, record_id):
         return self.food_repo.delete_food_log_by_id(user_id, record_id)

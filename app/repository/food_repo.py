@@ -20,20 +20,13 @@ class FoodRepository:
 
     def summarize_by_date_range(self, user_id: int, start_date, end_date):
         return (
-            db.session.query(
-                cast(Food.create_time, Date).label("date"),
-                func.sum(Food.calories).label("calories"),
-                func.sum(Food.carbs).label("carbs"),
-                func.sum(Food.protein).label("protein"),
-                func.sum(Food.fats).label("fats"),
-            )
+            Food.query
             .filter(Food.user_id == user_id)
-            .filter(cast(Food.create_time, Date) >= start_date)
-            .filter(cast(Food.create_time, Date) <= end_date)
-            .group_by(cast(Food.create_time, Date))
-            .order_by(cast(Food.create_time, Date).asc())
+            .filter(Food.create_time >= start_date)
+            .filter(Food.create_time < end_date)
             .all()
         )
+
 
     def delete_food_log_by_id(self, user_id, record_id):
         food_log = Food.query.filter(

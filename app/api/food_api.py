@@ -1,5 +1,6 @@
 # app/controllers/food_controller.py
 import traceback
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -110,11 +111,13 @@ def get_diagram():
         utc_end = local_end.astimezone(
             timezone.utc
         )
-        result = food_svc.get_diagram_data(
+        foods = food_svc.get_diagram_data(
             user_id=user_id,
             start_date=utc_start,
             end_date=utc_end,
         )
+
+        result = summarize_foods_by_day(foods, g.timezone)
 
         return succeed(result), 200
 
@@ -124,3 +127,44 @@ def get_diagram():
     except Exception as e:
         traceback.print_exc()
         return fail(code=1, message="Server error"), 500
+
+
+def summarize_foods_by_day(foods, timezone_name):
+    result = defaultdict(
+        lambda: {
+            "calories": 0,
+            "carbs": 0,
+            "protein": 0,
+            "fats": 0
+        }
+    )
+
+    tz = ZoneInfo(timezone_name)
+
+    for food in foods:
+
+        create_time = food.create_time
+
+        if create_time.tzinfo is None:
+            create_time = create_time.replace(
+                tzinfo=timezone.utc
+            )
+
+        local_date = (
+            create_time
+            .astimezone(tz)
+            .date()
+        )
+
+        result[local_date]["calories"] += food.calories
+        result[local_date]["carbs"] += food.carbs
+        result[local_date]["protein"] += food.protein
+        result[local_date]["fats"] += food.fats
+
+    return [
+        {
+            "date": date.isoformat(),
+            **summary
+        }
+        for date, summary in sorted(result.items())
+    ]
