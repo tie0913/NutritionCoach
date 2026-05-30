@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields, validate
 
+from app.api.schema.local_date_time import LocalDateTime
+
 
 class FoodCreateSchema(Schema):
     name = fields.Str(required=True, validate=validate.Length(min=1, max=100))
@@ -19,7 +21,7 @@ class FoodResponseSchema(Schema):
     carbs = fields.Int()
     protein = fields.Int()
     fats = fields.Int()
-    create_time = fields.DateTime()
+    create_time = LocalDateTime()
 
 
 class FoodQuerySchema(Schema):
@@ -30,6 +32,6 @@ class FoodDeleteSchema(Schema):
     id = fields.Int()
 
 class DiagramQuerySchema(Schema):
-    start_date = fields.Date(required=True)
-    end_date = fields.Date(required=True)
+    start_date = LocalDateTime(required=True)
+    end_date = LocalDateTime(required=True)
 

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, g, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -8,9 +8,16 @@ CORS(
     supports_credentials=True,
 )
 
+@app.before_request
+def load_context():
+    g.timezone = request.headers.get(
+        "Timezone",
+        "UTC"
+    )
+
 @app.route('/')
 def hello_world():  # put application's code here
-    return 'Hello World!'
+    return 'Nutri Coach is Surviving!'
 
 
 if __name__ == '__main__':
