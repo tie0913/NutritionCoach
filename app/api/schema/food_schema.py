@@ -24,9 +24,7 @@ class FoodResponseSchema(Schema):
     create_time = LocalDateTime()
 
 
-class FoodQuerySchema(Schema):
-    page = fields.Int(load_default=1, validate=validate.Range(min=1))
-    page_size = fields.Int(load_default=10, validate=validate.Range(min=1, max=100))
+
 
 class FoodDeleteSchema(Schema):
     id = fields.Int()

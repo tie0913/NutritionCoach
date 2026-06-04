@@ -10,9 +10,9 @@ from marshmallow import ValidationError
 
 from app.api.schema.food_schema import (
     FoodCreateSchema,
-    FoodQuerySchema,
     DiagramQuerySchema, FoodDeleteSchema,
 )
+from app.api.schema.page_schema import PageSchema
 from app.service.food_service import FoodService
 from app.repository.food_repo import FoodRepository
 from app.resp import succeed, fail
@@ -47,7 +47,7 @@ def create_food():
 def list_foods():
     try:
         user_id = int(get_jwt_identity())
-        query = FoodQuerySchema().load(request.args)
+        query = PageSchema().load(request.args)
 
         result = food_svc.list_foods(
             user_id=user_id,
