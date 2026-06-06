@@ -5,10 +5,8 @@ from app.repository.food_repo import FoodRepository
 
 class FoodService:
 
-    def __init__(self, food_repo:FoodRepository):
-        self.food_repo = food_repo
-
-    def create_food(self, user_id: int, data: dict):
+    @staticmethod
+    def create_food(user_id: int, data: dict):
         food = Food(
             user_id=user_id,
             name=data["name"],
@@ -19,11 +17,12 @@ class FoodService:
             fats=data["fats"],
         )
 
-        saved_food = self.food_repo.create(food)
+        saved_food = FoodRepository.create(food)
         return FoodResponseSchema().dump(saved_food)
 
-    def list_foods(self, user_id: int, page: int, page_size: int):
-        pagination = self.food_repo.find_by_user(user_id, page, page_size)
+    @staticmethod
+    def list_foods(user_id: int, page: int, page_size: int):
+        pagination = FoodRepository.find_by_user(user_id, page, page_size)
 
         return {
             "items": FoodResponseSchema(many=True).dump(pagination.items),
@@ -33,16 +32,14 @@ class FoodService:
             "pages": pagination.pages,
         }
 
-    def get_diagram_data(self, user_id: int, start_date, end_date):
-        return self.food_repo.summarize_by_date_range(
+    @staticmethod
+    def get_diagram_data(user_id: int, start_date, end_date):
+        return FoodRepository.summarize_by_date_range(
             user_id=user_id,
             start_date=start_date,
             end_date=end_date
         )
 
-
-
-
-
-    def delete_food_log_by_id(self, user_id, record_id):
-        return self.food_repo.delete_food_log_by_id(user_id, record_id)
+    @staticmethod
+    def delete_food_log_by_id(user_id, record_id):
+        return FoodRepository.delete_food_log_by_id(user_id, record_id)

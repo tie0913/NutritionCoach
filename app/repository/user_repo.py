@@ -3,17 +3,21 @@ from app import db
 
 class UserRepository:
 
-    def save(self, user):
+    @staticmethod
+    def save(user):
         db.session.add(user)
         db.session.commit()
         return user
 
-    def find_by_email(self, email):
+    @staticmethod
+    def find_by_email(email):
         return User.query.filter_by(email=email).first()
 
-    def find_by_id(self, user_id):
+    @staticmethod
+    def find_by_id(user_id):
         return User.query.filter_by(id=user_id).first()
 
-    def delete(self, user):
+    @staticmethod
+    def delete(user):
         db.session.delete(user)
         db.session.commit()

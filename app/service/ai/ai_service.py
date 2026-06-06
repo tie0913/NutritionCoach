@@ -11,7 +11,7 @@ class OpenAIService:
 
     _model = os.getenv(
         "OPENAI_MODEL",
-        "gpt-5.4-mini"
+        "gpt-4o-mini"
     )
 
     @staticmethod

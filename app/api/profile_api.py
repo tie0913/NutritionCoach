@@ -10,16 +10,11 @@ from app.service.profile_service import ProfileService
 from app.repository.profile_repo import ProfileRepository
 from app.resp import succeed, fail
 
-profile_repo = ProfileRepository()
-user_repo = UserRepository()
-profile_service = ProfileService(profile_repo, user_repo)
-
 profile_bp = Blueprint(
     "profile",
     __name__,
     url_prefix="/profile"
 )
-
 
 @profile_bp.route("", methods=["GET"])
 @jwt_required()
@@ -28,7 +23,7 @@ def get_profile():
     try:
         user_id = get_jwt_identity()
 
-        profile = profile_service.get_profile(user_id)
+        profile = ProfileService.get_profile(user_id)
 
         if profile is None:
             return fail(code=1, message="Profile not found"), 404
@@ -48,7 +43,7 @@ def save_profile():
         user_id = get_jwt_identity()
         json_data = request.get_json()
         data = profile_schema.load(json_data)
-        profile = profile_service.save_profile(user_id, data)
+        profile = ProfileService.save_profile(user_id, data)
         return succeed(profile), 200
     except ValidationError as e:
         return fail(code=1, message=str(e)), 400

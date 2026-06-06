@@ -3,7 +3,7 @@ from app import db
 
 class Plan(db.Model):
 
-    __tablename__ = "plan"
+    __tablename__ = "plans"
 
     id = db.Column(
         db.Integer,

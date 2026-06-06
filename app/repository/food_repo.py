@@ -5,12 +5,14 @@ from app.model.food import Food
 
 class FoodRepository:
 
-    def create(self, food: Food):
+    @staticmethod
+    def create(food: Food):
         db.session.add(food)
         db.session.commit()
         return food
 
-    def find_by_user(self, user_id: int, page: int, page_size: int):
+    @staticmethod
+    def find_by_user(user_id: int, page: int, page_size: int):
         return (
             Food.query
             .filter(Food.user_id == user_id)
@@ -18,7 +20,8 @@ class FoodRepository:
             .paginate(page=page, per_page=page_size, error_out=False)
         )
 
-    def summarize_by_date_range(self, user_id: int, start_date, end_date):
+    @staticmethod
+    def summarize_by_date_range(user_id: int, start_date, end_date):
         return (
             Food.query
             .filter(Food.user_id == user_id)
@@ -28,7 +31,8 @@ class FoodRepository:
         )
 
 
-    def delete_food_log_by_id(self, user_id, record_id):
+    @staticmethod
+    def delete_food_log_by_id(user_id, record_id):
         food_log = Food.query.filter(
             Food.id == record_id,
             Food.user_id == user_id

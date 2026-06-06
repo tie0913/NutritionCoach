@@ -16,7 +16,7 @@ class PlanService:
             user_id: int,
             budget: float
     ):
-        profile = ProfileRepository.find_by_user_id(
+        profile = ProfileRepository.get_by_user_id(
             user_id
         )
 

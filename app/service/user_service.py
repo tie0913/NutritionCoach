@@ -2,15 +2,15 @@ from app.model.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+from app.repository.user_repo import UserRepository
 from exception import NutriCoachException
 
 
 class UserService:
-    def __init__(self, user_repository):
-        self.user_repository = user_repository
 
-    def sign_up(self, data):
-        existing_user = self.user_repository.find_by_email(
+    @staticmethod
+    def sign_up(data):
+        existing_user = UserRepository.find_by_email(
             data.get("email")
         )
         if existing_user:
@@ -24,14 +24,15 @@ class UserService:
             birth_date=data.get("birth_date")
         )
 
-        return self.user_repository.save(user)
+        return UserRepository.save(user)
 
-    def sign_in(self, data):
+    @staticmethod
+    def sign_in(data):
 
         email = data.get("email")
         password = data.get("password")
 
-        user = self.user_repository \
+        user = UserRepository \
             .find_by_email(email)
 
         if not user:
@@ -46,14 +47,16 @@ class UserService:
 
 
 
-    def get_current_user(self, user_id):
-        user = self.user_repository.find_by_id(user_id)
+    @staticmethod
+    def get_current_user(user_id):
+        user = UserRepository.find_by_id(user_id)
         if not user:
             raise NutriCoachException(message="User not found")
         return user
 
-    def delete_account(self, user_id):
-        user = self.user_repository.find_by_id(user_id)
+    @staticmethod
+    def delete_account(user_id):
+        user = UserRepository.find_by_id(user_id)
         if not user:
             raise NutriCoachException(message="User not found")
-        self.user_repository.delete(user)
+        UserRepository.delete(user)

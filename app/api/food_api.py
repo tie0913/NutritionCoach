@@ -17,12 +17,7 @@ from app.service.food_service import FoodService
 from app.repository.food_repo import FoodRepository
 from app.resp import succeed, fail
 
-food_repo = FoodRepository()
-food_svc = FoodService(food_repo)
-
-
 food_bp = Blueprint("food", __name__)
-
 
 @food_bp.route("/foodlog", methods=["POST"])
 @jwt_required()
@@ -31,7 +26,7 @@ def create_food():
         user_id = int(get_jwt_identity())
         data = FoodCreateSchema().load(request.get_json() or {})
 
-        result = food_svc.create_food(user_id, data)
+        result = FoodService.create_food(user_id, data)
         return succeed(result), 201
 
     except ValidationError as e:
@@ -49,7 +44,7 @@ def list_foods():
         user_id = int(get_jwt_identity())
         query = PageSchema().load(request.args)
 
-        result = food_svc.list_foods(
+        result = FoodService.list_foods(
             user_id=user_id,
             page=query["page"],
             page_size=query["page_size"]
@@ -72,7 +67,7 @@ def delete_food():
         delete = FoodDeleteSchema().load(request.args)
         print(delete)
         record_id = delete["id"]
-        res = food_svc.delete_food_log_by_id(user_id, record_id)
+        res = FoodService.delete_food_log_by_id(user_id, record_id)
         return succeed(res), 200
     except ValidationError as e:
         return fail(code=1, message=str(e.messages)), 400
@@ -111,7 +106,7 @@ def get_diagram():
         utc_end = local_end.astimezone(
             timezone.utc
         )
-        foods = food_svc.get_diagram_data(
+        foods = FoodService.get_diagram_data(
             user_id=user_id,
             start_date=utc_start,
             end_date=utc_end,
